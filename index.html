@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.min.js"></script>
+    <style>
+:root {
+        --main-bg: #ffffff;
+        --btn-text: #000000;
+        --highlight: #f65e5e;
+        --eq-btn: #34c759;
+        --border-color: #cccccc;
+        --btn-glossy: linear-gradient(to bottom, #ffffff, #dcdcdc);
+        --btn-glow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .dark-mode {
+            --main-bg: #121212;
+            --btn-text: #ffffff;
+            --highlight: #f65e5e;
+            --eq-btn: #34c759;
+            --border-color: #666666;
+            --btn-glossy: linear-gradient(to bottom, #333333, #111111);
+            --btn-glow: 0 2px 6px rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--main-bg);
+            color: var(--btn-text);
+            overflow: hidden;
+        }
+
+        .theme-toggle-wrapper {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            z-index: 3;
+        }
+
+        .theme-toggle {
+            appearance: none;
+            width: 50px;
+            height: 26px;
+            background: #ccc;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .theme-toggle:checked {
+            background: #4caf50;
+        }
+
+        .theme-toggle::before {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            transition: 0.3s;
+        }
+
+        .theme-toggle:checked::before {
+            transform: translateX(24px);
+        }
+
+        .calculator {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .display-section {
+            flex: 1;
+            /* উপরের অংশ ভরাট করবে */
+            background: #f1f1f1;
+            padding: 20px;
+            border-radius: 20px;
+            /* উপরে ও নিচে উভয় পাশে রাউন্ড */
+            margin: 10px 10px 0 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            padding: 10px;
+            background-color: var(--main-bg);
+            border-top: 2px solid var(--border-color);
+        }
+
+
+
+        #expression {
+            font-size: 28px;
+            text-align: right;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 8px;
+            padding: 10px;
+            background-color: var(--main-bg);
+        }
+
+        button {
+            padding: 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 15px;
+            background: var(--btn-glossy);
+            color: var(--btn-text);
+            box-shadow: var(--btn-glow);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .btn-clear {
+            background: var(--highlight);
+            color: white;
+        }
+        .btn-equal {
+            background: var(--eq-btn);
+            color: white;
+        }
+
+        .floating-history {
+            position: fixed;
+            top: 15px;
+            left: 10px;
+            background: rgba(240, 240, 240, 0.95);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 5;
+        }
+        .dark-mode .display-section {
+            background-color: #1e1e1e;
+            /* ডার্ক ব্যাকগ্রাউন্ড */
+            color: #ffffff;
+            /* ফন্ট সাদা */
+            border-radius: 8px;
+            /* কম রাউন্ডেড কর্ণার */
+        }
+
+        .display-section {
+            color: var(--btn-text);
+            border-radius: 8px;
+            /* লাইট মোডেও একই রাউন্ড */
+        }
+
+
+        .dark-mode .floating-history {
+            background-color: rgba(40, 40, 40, 0.95);
+            color: white;
+        }
+
+@media screen and (max-height: 600px) {
+            button {
+                padding: 14px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle-wrapper">
+        <input type="checkbox" class="theme-toggle" onchange="toggleTheme()">
+    </div>
+
+    <div class="floating-history" id="floatingHistory">
+        <strong>History</strong><br>
+        <div id="historyLog"></div>
+    </div>
+
+    <div class="calculator">
+        <div class="display-section">
+            <div id="expression">
+                0
+            </div>
+            <div id="result">
+                0
+            </div>
+        </div>
+        <div class="buttons">
+            <button class="btn-clear" onclick="resetCalculator()">AC</button>
+            <button onclick="append('sin(')">sin</button>
+            <button onclick="append('cos(')">cos</button>
+            <button onclick="append('tan(')">tan</button>
+
+            <button onclick="append('(')">(</button>
+            <button onclick="append(')')">)</button>
+            <button onclick="append('sqrt(')">√</button>
+            <button onclick="append('÷')">÷</button>
+
+            <button onclick="append('7')">7</button>
+            <button onclick="append('8')">8</button>
+            <button onclick="append('9')">9</button>
+            <button onclick="append('×')">×</button>
+
+            <button onclick="append('4')">4</button>
+            <button onclick="append('5')">5</button>
+            <button onclick="append('6')">6</button>
+            <button onclick="append('-')">−</button>
+
+            <button onclick="append('1')">1</button>
+            <button onclick="append('2')">2</button>
+            <button onclick="append('3')">3</button>
+            <button onclick="append('+')">+</button>
+
+            <button onclick="append('0')">0</button>
+            <button onclick="append('.')">.</button>
+            <button onclick="delChar()">DEL</button>
+            <button class="btn-equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let expression = "";
+        let calculated = false;
+
+        function append(val) {
+            if (calculated) {
+                expression = "";
+                document.getElementById("result").innerText = "0";
+                calculated = false;
+            }
+            expression += val;
+            document.getElementById("expression").innerText = expression || "0";
+        }
+
+        function calculate() {
+            try {
+                const parsed = expression
+                .replace(/÷/g, '/')
+                .replace(/×/g, '*')
+                .replace(/−/g, '-')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(');
+
+                const result = eval(parsed);
+                document.getElementById("result").innerText = result;
+                document.getElementById("historyLog").innerHTML += `<div>${expression} = ${result}</div>`;
+                expression = result.toString();
+                calculated = true;
+            } catch {
+                document.getElementById("result").innerText = "Error";
+            }
+        }
+
+        function delChar() {
+            expression = expression.slice(0, -1);
+            document.getElementById("expression").innerText = expression || "0";
+        }
+
+        function resetCalculator() {
+            expression = "";
+            calculated = false;
+            document.getElementById("expression").innerText = "0";
+            document.getElementById("result").innerText = "0";
+            document.getElementById("historyLog").innerHTML = "";
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+</body>
+</html>

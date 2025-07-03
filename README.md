@@ -1,4 +1,4 @@
-# 🌟 Elegant Calculator Web App
+# Calculator
 
 A clean, responsive, and PWA-ready calculator built with **HTML, CSS, and JavaScript** — designed for mobile-first use and system theme adaptation.
 
@@ -22,9 +22,7 @@ A clean, responsive, and PWA-ready calculator built with **HTML, CSS, and JavaSc
 
 | Light Mode                                 | Dark Mode                                  |
 |--------------------------------------------|---------------------------------------------|
-| ![Light Preview](assets/light-ui.png)      | ![Dark Preview](assets/dark-ui.png)         |
-
-*(Images should be placed under `/assets/` folder in your repo)*
+| ![Light Preview](assets/light.jpg)      | ![Dark Preview](assets/dark.jpg)         |
 
 ---
 

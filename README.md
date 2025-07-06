@@ -1,6 +1,6 @@
-# Calculator
+## Overview
 
-A clean, responsive, and PWA-ready calculator built with **HTML, CSS, and JavaScript** — designed for mobile-first use and system theme adaptation.
+![Calculator](assets/Preview.jpg)          
 
 ---
 
@@ -18,13 +18,8 @@ A clean, responsive, and PWA-ready calculator built with **HTML, CSS, and JavaSc
 
 ---
 
-## 📷 UI Preview
-
-| Light Mode                                 | Dark Mode                                  |
-|--------------------------------------------|---------------------------------------------|
-| ![Light Preview](assets/light.jpg)      | ![Dark Preview](assets/dark.jpg)         |
-
----
+### Download - App
+[Release-App](https://github.com/MSI-Sirajul/releases/)
 
 ## 🛠️ Technologies Used
 

@@ -19,7 +19,7 @@
 ---
 
 ### Download - App
-[Release-App](https://github.com/MSI-Sirajul/releases/)
+[Release-App]()
 
 ## 🛠️ Technologies Used
 

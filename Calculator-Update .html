@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Calculator</title>
+  <style>
+    :root {
+      --bg: #000;
+      --btn-bg: #1e1e1e;
+      --num-color: #ffffff;
+      --func-color: orange;
+      --equal-color: #28a745;
+      --num-btn: #ffffff;
+      --num-text: #000000;
+      --island-bg: linear-gradient(to right, #444, #222);
+      --island-text: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .calculator {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      padding: 10px;
+    }
+
+    .display {
+      flex: 0.6;
+      background: #222;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 20px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--island-bg);
+      color: var(--island-text);
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+    }
+
+    #expression {
+      font-size: 2.2rem;
+      opacity: 0.6;
+      word-wrap: break-word;
+      width: 100%;
+      text-align: right;
+    }
+
+    #result {
+      font-size: 3rem;
+      font-weight: bold;
+      width: 100%;
+      text-align: right;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 10px;
+      background-color: var(--bg);
+      width: 100%;
+      align-self: flex-end;
+      flex: 1.4;
+    }
+
+    button {
+      padding: 28px;
+      font-size: 20px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    .num {
+      background: var(--num-btn);
+      color: var(--num-text);
+    }
+
+    .func {
+      background: var(--btn-bg);
+      color: var(--func-color);
+    }
+
+    .equal {
+      background: var(--equal-color);
+      color: white;
+    }
+
+    @media screen and (max-width: 768px) {
+      button {
+        font-size: 18px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="display">
+      <div class="dynamic-island">Calculator</div>
+      <div id="expression">0</div>
+      <div id="result">0</div>
+    </div>
+
+    <div class="buttons">
+      <button class="func" onclick="clearAll()">AC</button>
+      <button class="func" onclick="delChar()">DEL</button>
+      <button class="func" onclick="append('%')">%</button>
+      <button class="func" onclick="append('/')">&#247;</button>
+
+      <button class="num" onclick="append('7')">7</button>
+      <button class="num" onclick="append('8')">8</button>
+      <button class="num" onclick="append('9')">9</button>
+      <button class="func" onclick="append('*')">&#215;</button>
+
+      <button class="num" onclick="append('4')">4</button>
+      <button class="num" onclick="append('5')">5</button>
+      <button class="num" onclick="append('6')">6</button>
+      <button class="func" onclick="append('-')">&minus;</button>
+
+      <button class="num" onclick="append('1')">1</button>
+      <button class="num" onclick="append('2')">2</button>
+      <button class="num" onclick="append('3')">3</button>
+      <button class="func" onclick="append('+')">+</button>
+
+      <button class="num" onclick="append('0')">0</button>
+      <button class="num" onclick="append('.')">.</button>
+      <button class="equal" style="grid-column: span 2;" onclick="finalize()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let expression = "";
+    let result = "";
+    let finalized = false;
+
+    const expDiv = document.getElementById("expression");
+    const resDiv = document.getElementById("result");
+
+    const operators = ['+', '-', '*', '/'];
+
+    function formatResult(val) {
+      if (typeof val !== 'number') return val;
+      const rounded = Math.round(val * 1000) / 1000;
+      if (rounded.toFixed(6).startsWith('9.999')) {
+        return 10;
+      }
+      return rounded;
+    }
+
+    function visibleExpression(rawExp) {
+      return rawExp.replace(/\*/g, '×').replace(/\//g, '÷');
+    }
+
+    function updateDisplay() {
+      expDiv.innerText = visibleExpression(expression) || "0";
+      try {
+        if (!expression || operators.includes(expression.slice(-1))) {
+          resDiv.innerText = "0";
+          return;
+        }
+
+        let parsed = expression;
+        parsed = parsed.replace(/(\d+(?:\.\d+)?)([+\-*/])(\d+(?:\.\d+)?)%/g, (_, num1, op, num2) => {
+          const base = parseFloat(num1);
+          const percent = parseFloat(num2) / 100;
+          switch(op) {
+            case '+': return `${base} + (${base} * ${percent})`;
+            case '-': return `${base} - (${base} * ${percent})`;
+            case '*': return `${base} * ${percent}`;
+            case '/': return `${base} / ${percent}`;
+            default: return _;
+          }
+        });
+
+        result = eval(parsed);
+        resDiv.innerText = formatResult(result);
+
+        if (!finalized) {
+          expDiv.style.fontSize = "2.2rem";
+          resDiv.style.fontSize = "3rem";
+        }
+      } catch (err) {
+        resDiv.innerText = "Error";
+      }
+    }
+
+    function append(val) {
+      if (finalized && !operators.includes(val)) {
+        expression = "";
+        finalized = false;
+      }
+
+      const lastChar = expression.slice(-1);
+      if (operators.includes(val) && operators.includes(lastChar)) {
+        expression = expression.slice(0, -1);
+      }
+
+      expression += val;
+      updateDisplay();
+    }
+
+    function clearAll() {
+      expression = "";
+      result = "";
+      finalized = false;
+      expDiv.innerText = "0";
+      resDiv.innerText = "0";
+    }
+
+    function delChar() {
+      if (finalized) return;
+      expression = expression.slice(0, -1);
+      updateDisplay();
+    }
+
+    function finalize() {
+      updateDisplay();
+      finalized = true;
+      expDiv.style.fontSize = "1.8rem";
+      resDiv.style.fontSize = "3.5rem";
+      expDiv.innerText = visibleExpression(expression);
+      resDiv.innerText = formatResult(result);
+    }
+  </script>
+</body>
+</html>

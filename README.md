@@ -4,6 +4,13 @@
 
 ---
 
+<p align="center">
+  <a href="https://msi-sirajul.github.io/Calculator/" target="_blank">
+    <img src="https://img.shields.io/badge/🔴 Live%20Preview-Click%20Here-critical?style=for-the-badge&logo=googlechrome" alt="Live Preview"/>
+  </a>
+</p>
+
+
 ## ✨ Features
 
 | Feature                          | Description                                                                 |

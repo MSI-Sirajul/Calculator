@@ -1,6 +1,6 @@
 ## Overview
 
-![Calculator](assets/Preview.jpg)          
+![Calculator](assets/Preview2.jpg)          
 
 ---
 

@@ -1,12 +1,25 @@
-## Overview
+<H1 align="center">
+  <span style="display: inline-block; padding: 10px 20px; border: 2px solid green; color: green; font-weight: bold; font-size: 48px; border-radius: 10px;">
+    CALCULATOR
+  </span>
+</H1>
 
 ![Calculator](assets/Preview2.jpg)          
 
 ---
 
+<h3 align="center"> 🔴Live Preview</h3>
 <p align="center">
   <a href="https://msi-sirajul.github.io/Calculator/" target="_blank">
     <img src="https://img.shields.io/badge/🔴 Live%20Preview-Click%20Here-critical?style=for-the-badge&logo=googlechrome" alt="Live Preview"/>
+  </a>
+</p>
+
+<h3 align="center">📲 Download App</h3>
+
+<p align="center">
+  <a href="https://github.com/MSI-Sirajul/Calculator/releases" target="_blank">
+    <img src="https://img.shields.io/badge/⬇️ Download-Latest%20Release-brightgreen?style=for-the-badge&logo=github" alt="Download App"/>
   </a>
 </p>
 
@@ -25,9 +38,6 @@
 | 📐 Responsive Layout             | Auto fits in **16:9** mobile screens or browser viewports                  |
 
 ---
-
-### Download - App
-[Release-App](https://github.com/MSI-Sirajul/Calculator/releases)
 
 ## 🛠️ Technologies Used
 

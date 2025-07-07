@@ -19,7 +19,7 @@
 ---
 
 ### Download - App
-[Release-App](https://github.com/MSI-Sirajul/Calculator/releases/download/Calculator_1.2/Calculator_new_release-v1.2.apk)
+[Release-App](https://github.com/MSI-Sirajul/Calculator/releases)
 
 ## 🛠️ Technologies Used
 
